@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include "Matrix.h"
 
+
 //Se reserva memoria para una nueva matriz
 matrix_t* matrix_new(int rows,int columns){
   matrix_t* matrix = (matrix_t*)malloc(sizeof(matrix_t));
@@ -9,19 +10,20 @@ matrix_t* matrix_new(int rows,int columns){
     printf("memory cannot be reserved\n");
     exit(-1);
   }
-  else{
-    matrix->m =(void**)malloc((rows*columns)*sizeof(void*));
-    if(matrix->m == NULL){
-      free(matrix);
-      matrix = NULL;
-      printf("memory cannot be reserved\n");
-      exit(-2);
-    }
-    else{
-      matrix->rows = rows;
-      matrix->columns = columns;
-    }
+  matrix->m =(void**)malloc((rows*columns)*sizeof(void*));
+  if(matrix->m == NULL){
+    free(matrix);
+    matrix = NULL;
+    printf("memory cannot be reserved\n");
+    exit(-2);
   }
+  for(int i=0;i<rows;i++){
+    for(int j=0;j<columns;j++){
+      matrix->m[i*columns+j] = NULL;  
+    }  
+  }
+  matrix->rows = rows;
+  matrix->columns = columns;
   return matrix;
 }
 
@@ -53,29 +55,45 @@ int matrix_columns(matrix_t* mtrx){
   return mtrx->columns;
 }
 
-//Retorna el elemento seleccionado
+//Retorna el elemento seleccionado por fila o columna.
 void* matrix_get(matrix_t* mtrx,int row,int column){
   if(mtrx == NULL){
     printf("matrix pointer is NULL");
     exit(-5);
   }
-  return mtrx->m[row*matrix_columns(mtrx)+column];
+  if(row<0 || row>=mtrx->rows){
+    printf("invalid row");
+    exit(-6);  
+  }
+  if(column<0 || column>=mtrx->columns){
+    printf("invalid column");
+    exit(-7);
+  }
+  return mtrx->m[row*mtrx->columns+column];
 }
 
-//Agrega un elemento a la matriz en la fila y columna seleccionada
+//Agrega un elemento a la matriz en la fila y columna seleccionada.
 void matrix_set(matrix_t* mtrx,int row,int column,void* value){
   if(mtrx == NULL){
     printf("matrix pointer is NULL");
-    exit(-6);    
+    exit(-8);    
   }
-  mtrx->m[row*matrix_columns(mtrx)+column] = value;
+  if(row<0 || row>=mtrx->rows){
+    printf("invalid row");
+    exit(-9);  
+  }
+  if(column<0 || column>=mtrx->columns){
+    printf("invalid column");
+    exit(-10);
+  }
+  mtrx->m[row*mtrx->columns+column] = value;
 }
 
 //Imprime la matriz
 void matrix_printf(matrix_t* mtrx,void(*print)(void*)){
   if(mtrx == NULL){
     printf("matrix pointer is NULL");
-    return;
+    exit(-11);
   }
   for(int i=0;i<matrix_rows(mtrx);i++){
     for(int j=0;j<matrix_columns(mtrx);j++){
@@ -85,6 +103,26 @@ void matrix_printf(matrix_t* mtrx,void(*print)(void*)){
     }
   }
 }
+
+
+void matrix_traverse(matrix_t* matrix, bool matrix_do(void* element,void* ctx),void* context){
+  if(matrix == NULL){
+    printf("matrix pointer is NULL");
+    exit(-12);    
+  }
+  int rows = 0;
+  int columns = 0;
+  while(rows<matrix_rows(matrix)){
+    while(columns<matrix_columns(matrix) && matrix_do(matrix_get(matrix,rows,columns),context)){
+      columns++; 
+    }
+    if(columns == matrix_columns(matrix)){
+      columns = 0;  
+    }
+    rows++;  
+  }
+}
+
 
 
 

@@ -1,5 +1,6 @@
 #ifndef TDAMATRIX_H_INCLUDED
 #define TDAMATRIX_H_INCLUDED
+#include <stdbool.h>
 
 typedef struct{
  void** m;
@@ -20,6 +21,8 @@ void* matrix_get(matrix_t* mtrx,int row,int column);
 void matrix_set(matrix_t* mtrx,int row,int column,void* value);
 
 void matrix_printf(matrix_t* mtrx,void (*print)(void*));
+
+void matrix_traverse(matrix_t* matrix, bool matrix_do(void* element,void* ctx),void* context);
 
 #include "Matrix.c"
 #endif // TDAMATRIX_H_INCLUDED
