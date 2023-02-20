@@ -5,7 +5,7 @@
 #include "Matrix.h"
 
 matrix_t* matrix_int(int rows,int columns);
-void matrix_delete(matrix_t** mtrx,void (*free_pointer)(void**));
+void matrix_erase(matrix_t** mtrx,void (*free_pointer)(void**));
 void free_pointer(void** pointer);
 void print_int(void* pointer);
 int compare(void* element1,void* element2);
@@ -17,32 +17,38 @@ void* matrix_maxElement(matrix_t* matrix,int rows,int columns,int(*compare)(void
 
 
 int main(void){
-  // creo una matrix de enteros
+  // creation of a int matrix.
   matrix_t* matrix = matrix_int(5,5);
- 
-  //imprimo la matrix de enteros
+
+  //print the matrix.
   matrix_printf(matrix,print_int); 
-  
-  //calculo la suma de los elementos de la matriz de enteros con matrix traverse
+
+  //calculate the addition of all the elements of the matrix.
   int addition = 0;
   matrix_traverse(matrix,matrix_addition,&addition);
   printf("\naddition of all elements: %d \n",addition);
 
-  //suma de todos los elementos de forma recursiva
+  //addition of all the elements in a recursive form.
   printf("addition of all elements: %d \n",matrix_elements_addition(matrix,matrix_rows(matrix),matrix_columns(matrix)));
 
-  //maximo elemento de la matrix
+  //calculate the max element of the matrix.
   printf("max element of matrix: %d \n",*(int*)matrix_maxElement(matrix,matrix_rows(matrix),matrix_columns(matrix),compare));
 
-  //elimino la matriz con sus elementos
-  matrix_delete(&matrix,free_pointer);
+  //erase the matrix with all the elements.
+  matrix_erase(&matrix,free_pointer);
 
   return 0;    
 }
 
-//**********************ejemplos de funciones y procedimientos de uso del tda************************//
+//**********************EXAMPLES OF USE OF TDA.************************//
 
-//crea una matriz de enteros
+/**
+ * @brief create a int matrix.
+ * 
+ * @param rows 
+ * @param columns 
+ * @return matrix_t* 
+ */
 matrix_t* matrix_int(int rows,int columns){
   matrix_t* mtrx = matrix_new(rows,columns);
   srand(time(NULL));
@@ -57,8 +63,13 @@ matrix_t* matrix_int(int rows,int columns){
   return mtrx;  
 }
 
-//vacia la matriz y la elimina
-void matrix_delete(matrix_t** mtrx,void (*free_pointer)(void**)){
+/**
+ * @brief delete the matrix with all his elements and free the used memory.
+ * 
+ * @param mtrx 
+ * @param free_pointer 
+ */
+void matrix_erase(matrix_t** mtrx,void (*free_pointer)(void**)){
   void* auxiliar = NULL;
   for(int i=0;i<matrix_rows(*mtrx);i++){
     for(int j=0;j<matrix_columns(*mtrx);j++){
@@ -69,22 +80,44 @@ void matrix_delete(matrix_t** mtrx,void (*free_pointer)(void**)){
   matrix_free(mtrx);    
 }
 
-//procedimientos auxiliares y funcion de comparacion de genericos
+/**
+ * @brief auxiliar procedure to free the memory of a int pointer.
+ * 
+ * @param pointer 
+ */
 void free_pointer(void** pointer){
   free(*pointer);
   *pointer = NULL;    
 }
 
+/**
+ * @brief auxiliar procedure to free a int pointer.
+ * 
+ * @param pointer 
+ */
 void print_int(void* pointer){
   printf("%i ",*(int*)pointer);  
 }
 
+/**
+ * @brief auxiliar compare function.
+ * 
+ * @param element1 
+ * @param element2 
+ * @return int 
+ */
 int compare(void* element1,void* element2){
   return (*(int*)element1)-(*(int*)element2);     
 }
-///////////////////////////////
 
-//suma de los elementos de una matriz de forma recursiva
+/**
+ * @brief calculate the addition of all the elements of a int matrix.
+ * 
+ * @param mtrx 
+ * @param rows 
+ * @param columns 
+ * @return int 
+ */
 int matrix_elements_addition(matrix_t* mtrx,int rows,int columns){
   int returned = 0;
   if(rows>0){
@@ -93,7 +126,14 @@ int matrix_elements_addition(matrix_t* mtrx,int rows,int columns){
   return returned;  
 }
 
-// suma de los elementos de una fila de la matriz
+/**
+ * @brief calculate the addition of all the elements of the specified row.
+ * 
+ * @param mtrx 
+ * @param row 
+ * @param columns 
+ * @return int 
+ */
 int row_elements_addition(matrix_t* mtrx,int row,int columns){
   int returned = 0;
   if(columns>0){
@@ -102,7 +142,14 @@ int row_elements_addition(matrix_t* mtrx,int row,int columns){
   return returned;  
 }
 
-// funcion prueba para matrix_traverse
+/**
+ * @brief function to test matrix addition.
+ * 
+ * @param element 
+ * @param context 
+ * @return true 
+ * @return false 
+ */
 bool matrix_addition(void* element,void* context){
   bool returned = false;
   if(element != NULL){
@@ -112,7 +159,15 @@ bool matrix_addition(void* element,void* context){
   return returned;      
 }
 
-// maximo de una fila de la matriz 
+/**
+ * @brief get the max element of the specified row.
+ * 
+ * @param matrix 
+ * @param row 
+ * @param columns 
+ * @param compare 
+ * @return void* 
+ */
 void* row_maxElement(matrix_t* matrix,int row,int columns,int(*compare)(void*,void*)){
   void* returned = NULL;
   if(matrix == NULL){
@@ -132,7 +187,15 @@ void* row_maxElement(matrix_t* matrix,int row,int columns,int(*compare)(void*,vo
   return returned;
 }
 
-// maximo de la matriz de forma recursiva usando row_maxElement
+/**
+ * @brief get the max element of the matrix.Use of row_maxElement.
+ * 
+ * @param matrix 
+ * @param rows 
+ * @param columns 
+ * @param compare 
+ * @return void* 
+ */
 void* matrix_maxElement(matrix_t* matrix,int rows,int columns,int(*compare)(void*,void*)){
   if(matrix == NULL){
     printf("matrix pointer is NULL");

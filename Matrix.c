@@ -3,19 +3,25 @@
 #include "Matrix.h"
 
 
-//Se reserva memoria para una nueva matriz
+/**
+ * @brief creation of matrix of the specified size (rows,columns)
+ * 
+ * @param rows 
+ * @param columns 
+ * @return matrix_t* 
+ */
 matrix_t* matrix_new(int rows,int columns){
   matrix_t* matrix = (matrix_t*)malloc(sizeof(matrix_t));
   if(matrix == NULL){
-    printf("memory cannot be reserved\n");
-    exit(-1);
+    printf("\nmemory cannot be reserved for a new matrix\n");
+    exit(EXIT_FAILURE);
   }
   matrix->m =(void**)malloc((rows*columns)*sizeof(void*));
   if(matrix->m == NULL){
     free(matrix);
     matrix = NULL;
-    printf("memory cannot be reserved\n");
-    exit(-2);
+    printf("\nmemory cannot be reserved for a vector of elements\n");
+    exit(EXIT_FAILURE);
   }
   for(int i=0;i<rows;i++){
     for(int j=0;j<columns;j++){
@@ -27,7 +33,11 @@ matrix_t* matrix_new(int rows,int columns){
   return matrix;
 }
 
-//Se libera la memoria de la matriz
+/**
+ * @brief free the memory of a matrix.
+ * 
+ * @param mtrx 
+ */
 void matrix_free(matrix_t** mtrx){
   if(mtrx != NULL && *mtrx != NULL){
     free((*mtrx)->m);
@@ -37,63 +47,163 @@ void matrix_free(matrix_t** mtrx){
   }
 }
 
-//Retorna las filas
+/**
+ * @brief return the rows of a matrix.
+ * 
+ * @param mtrx 
+ * @return int 
+ */
 int matrix_rows(matrix_t* mtrx){
   if(mtrx == NULL){
-    printf("matrix pointer is NULL");
-    exit(-3);  
+    printf("\nmatrix pointer is NULL(1)\n");
+    exit(EXIT_FAILURE);  
   }
   return mtrx->rows;
 }
 
-//Retorna las columnas
+/**
+ * @brief return the columns of a matrix.
+ * 
+ * @param mtrx 
+ * @return int 
+ */
 int matrix_columns(matrix_t* mtrx){
   if(mtrx == NULL){
-    printf("matrix pointer is NULL");
-    exit(-4);  
+    printf("\nmatrix pointer is NULL(2)\n");
+    exit(EXIT_FAILURE);  
   }
   return mtrx->columns;
 }
 
-//Retorna el elemento seleccionado por fila o columna.
+/**
+ * @brief getter for the element in the specified position.
+ * 
+ * @param mtrx 
+ * @param row 
+ * @param column 
+ * @return void* 
+ */
 void* matrix_get(matrix_t* mtrx,int row,int column){
   if(mtrx == NULL){
-    printf("matrix pointer is NULL");
-    exit(-5);
+    printf("\nmatrix pointer is NULL(3)\n");
+    exit(EXIT_FAILURE);
   }
   if(row<0 || row>=mtrx->rows){
-    printf("invalid row");
-    exit(-6);  
+    printf("\ninvalid row(1)\n");
+    exit(EXIT_FAILURE);  
   }
   if(column<0 || column>=mtrx->columns){
-    printf("invalid column");
-    exit(-7);
+    printf("\ninvalid column(1)\n");
+    exit(EXIT_FAILURE);
   }
   return mtrx->m[row*mtrx->columns+column];
 }
 
-//Agrega un elemento a la matriz en la fila y columna seleccionada.
-void matrix_set(matrix_t* mtrx,int row,int column,void* value){
+/**
+ * @brief setter for a element in the specified position.Return true if it was added and false
+ * if the position is alredy busy.
+ * 
+ * @param mtrx 
+ * @param row 
+ * @param column 
+ * @param value 
+ * @return true 
+ * @return false 
+ */
+bool matrix_set(matrix_t* mtrx,int row,int column,void* value){
   if(mtrx == NULL){
-    printf("matrix pointer is NULL");
-    exit(-8);    
+    printf("\nmatrix pointer is NULL(4)\n");
+    exit(EXIT_FAILURE);    
   }
   if(row<0 || row>=mtrx->rows){
-    printf("invalid row");
-    exit(-9);  
+    printf("\ninvalid row(2)\n");
+    exit(EXIT_FAILURE);  
   }
   if(column<0 || column>=mtrx->columns){
-    printf("invalid column");
-    exit(-10);
+    printf("\ninvalid column(2)\n");
+    exit(EXIT_FAILURE);
   }
-  mtrx->m[row*mtrx->columns+column] = value;
+  bool returned = false;
+  if(mtrx->m[row*mtrx->columns+column] == NULL){
+    mtrx->m[row*mtrx->columns+column] = value;
+    returned = true;
+  }
+  return returned;
 }
 
-//Imprime la matriz
+/**
+ * @brief delete a element from the specified position.Return true if it was deleted and false
+ * if the element does not exist.
+ * 
+ * @param mtrx 
+ * @param row 
+ * @param column 
+ * @param freeElement 
+ * @return true 
+ * @return false 
+ */
+bool matrix_delete(matrix_t* mtrx,int row,int column,void (*freeElement)(void* element)){
+  if(mtrx == NULL){
+    printf("matrix pointer is NULL(5)");
+    exit(EXIT_FAILURE);    
+  }   
+  if(row<0 || row>=mtrx->rows){
+    printf("invalid row(3)");
+    exit(EXIT_FAILURE);  
+  }
+  if(column<0 || column>=mtrx->columns){
+    printf("invalid column(3)");
+    exit(EXIT_FAILURE);
+  }
+  bool returned = false;
+  if(mtrx->m[row*mtrx->columns+column]!=NULL){
+    freeElement(mtrx->m[row*mtrx->columns+column]);
+    mtrx->m[row*mtrx->columns+column] = NULL;
+    returned = true;    
+  }
+  return returned;
+}
+
+/**
+ * @brief exchange the element in from the specified position.return the exchanged element.
+ * 
+ * @param mtrx 
+ * @param row 
+ * @param column 
+ * @param element 
+ * @return void* 
+ */
+void* matrix_exchangeElement(matrix_t* mtrx,int row,int column,void* element){
+  if(mtrx == NULL){
+    printf("matrix pointer is NULL(6)");
+    exit(EXIT_FAILURE);    
+  }   
+  if(row<0 || row>=mtrx->rows){
+    printf("invalid row(4)");
+    exit(EXIT_FAILURE);  
+  }
+  if(column<0 || column>=mtrx->columns){
+    printf("invalid column(4)");
+    exit(EXIT_FAILURE);
+  }
+  void* returned = NULL;
+  if(mtrx->m[row*mtrx->columns+column]!=NULL){
+    returned = mtrx->m[row*mtrx->columns+column];
+    mtrx->m[row*mtrx->columns+column] = element; 
+  }
+  return returned; 
+}
+
+/**
+ * @brief print the matrix.
+ * 
+ * @param mtrx 
+ * @param print 
+ */
 void matrix_printf(matrix_t* mtrx,void(*print)(void*)){
   if(mtrx == NULL){
-    printf("matrix pointer is NULL");
-    exit(-11);
+    printf("\nmatrix pointer is NULL(7)\n");
+    return;
   }
   for(int i=0;i<matrix_rows(mtrx);i++){
     for(int j=0;j<matrix_columns(mtrx);j++){
@@ -104,11 +214,17 @@ void matrix_printf(matrix_t* mtrx,void(*print)(void*)){
   }
 }
 
-
+/**
+ * @brief traverse the matrix using a context variable.
+ * 
+ * @param matrix 
+ * @param matrix_do 
+ * @param context 
+ */
 void matrix_traverse(matrix_t* matrix, bool matrix_do(void* element,void* ctx),void* context){
   if(matrix == NULL){
-    printf("matrix pointer is NULL");
-    exit(-12);    
+    printf("\nmatrix pointer is NULL(8)\n");
+    return;   
   }
   int rows = 0;
   int columns = 0;

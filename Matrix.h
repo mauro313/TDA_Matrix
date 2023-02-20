@@ -18,7 +18,11 @@ int matrix_columns(matrix_t* mtrx);
 
 void* matrix_get(matrix_t* mtrx,int row,int column);
 
-void matrix_set(matrix_t* mtrx,int row,int column,void* value);
+bool matrix_set(matrix_t* mtrx,int row,int column,void* value);
+
+bool matrix_delete(matrix_t* mtrx,int row,int column,void (*freeElement)(void* element));
+
+void* matrix_exchangeElement(matrix_t* mtrx,int row,int column,void* element);
 
 void matrix_printf(matrix_t* mtrx,void (*print)(void*));
 
