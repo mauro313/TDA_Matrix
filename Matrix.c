@@ -4,7 +4,7 @@
 
 
 /**
- * @brief creation of matrix of the specified size (rows,columns)
+ * @brief creation of a matrix of the specified size (rows,columns)
  * 
  * @param rows 
  * @param columns 
@@ -100,7 +100,7 @@ void* matrix_get(matrix_t* mtrx,int row,int column){
 }
 
 /**
- * @brief setter for a element in the specified position.Return true if it was added and false
+ * @brief setter for an element in the specified position.Return true if it was added and false
  * if the position is alredy busy.
  * 
  * @param mtrx 
@@ -132,7 +132,7 @@ bool matrix_set(matrix_t* mtrx,int row,int column,void* value){
 }
 
 /**
- * @brief delete a element from the specified position.Return true if it was deleted and false
+ * @brief delete an element from the specified position.Return true if it was deleted and false
  * if the element does not exist.
  * 
  * @param mtrx 
@@ -165,7 +165,7 @@ bool matrix_delete(matrix_t* mtrx,int row,int column,void (*freeElement)(void* e
 }
 
 /**
- * @brief exchange the element in from the specified position.return the exchanged element.
+ * @brief exchange the element from the specified position.Return the exchanged element.
  * 
  * @param mtrx 
  * @param row 
